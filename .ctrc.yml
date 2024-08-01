@@ -1,0 +1,4 @@
+# Copyright 2024 Practically.io All rights reserved
+git:
+  provider: github
+  project: Practically/Release-CI-Playground

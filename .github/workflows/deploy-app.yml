@@ -1,0 +1,22 @@
+name: Deploy App
+
+on:
+  workflow_run:
+    workflows: ["Create Release"]
+    types: ["completed"]
+
+jobs:
+  deploy-app:
+    name: Push Docker image to Docker Hub
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        run: echo "Success!"
+
+  fail:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Fail
+        run: echo "The release must pass for this to run" && exit 1

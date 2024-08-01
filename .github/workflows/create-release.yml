@@ -1,0 +1,35 @@
+# Copyright 2024 Practically.io All rights reserved
+
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (Leave blank for an automatically generated version bump)'
+        required: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/stage'
+    name: Release
+    runs-on: ubuntu-latest
+    container: practically/conventional-tools:1.x
+    env:
+      CT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Git safe.directory
+        run: git config --global --add safe.directory $PWD
+
+      - name: Setup Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Release
+        run: conventional-tools release-semver ${{ github.event.inputs.version }}
